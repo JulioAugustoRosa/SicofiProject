@@ -1,0 +1,50 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables (NUNCA commitar — contém chaves de API!)
+.env
+.env.local
+.env.*.local
+
+# Configurações locais de ferramentas de IA / agentes
+.claude/
+
+# Supabase
+supabase/.temp
+supabase/.branches
+
+# Build output
+build/
+out/
+.next/
+.vercel
+.turbo
+
+# Test coverage
+coverage/
+*.lcov
+
+# OS
+Thumbs.db
