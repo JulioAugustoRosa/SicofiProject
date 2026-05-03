@@ -127,22 +127,25 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
+    if (!GROQ_API_KEY) throw new Error("GROQ_API_KEY não configurada");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${GROQ_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        // Modelo da Groq com bom equilíbrio de qualidade x velocidade.
+        // Outros disponíveis: "llama-3.1-70b-versatile", "mixtral-8x7b-32768"
+        model: "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           ...messages,
         ],
         stream: true,
+        temperature: 0.7,
       }),
     });
 
@@ -153,14 +156,14 @@ serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Créditos insuficientes. Adicione créditos ao workspace." }), {
-          status: 402,
+      if (response.status === 401) {
+        return new Response(JSON.stringify({ error: "Chave da IA inválida ou expirada." }), {
+          status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      console.error("Erro no provedor de IA:", response.status, t);
       return new Response(JSON.stringify({ error: "Erro no serviço de IA" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
