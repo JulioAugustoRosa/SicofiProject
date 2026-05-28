@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, MessageSquare, Table, Target, LogOut, UserCog } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Table, Target, Bell, LogOut, UserCog } from "lucide-react";
 import { motion } from "framer-motion";
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { to: "/chat", icon: MessageSquare, label: "Chat IA" },
   { to: "/spreadsheet", icon: Table, label: "Planilha" },
   { to: "/goals", icon: Target, label: "Metas" },
+  { to: "/reminders", icon: Bell, label: "Lembretes" },
 ];
 
 const accountNav = { to: "/account", icon: UserCog, label: "Conta" };

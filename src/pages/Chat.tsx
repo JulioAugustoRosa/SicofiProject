@@ -35,6 +35,9 @@ interface FinancialAction {
   currentAmount?: number;
   monthlyContribution?: number;
   deadline?: string | null;
+  // Campos de lembrete
+  dueDate?: string | null;
+  remindAt?: string;
 }
 
 // Extrai ações financeiras estruturadas da resposta do assistente.
@@ -137,6 +140,56 @@ async function processFinancialActions(content: string, userId: string) {
           .limit(1);
         if (data && data.length > 0) {
           await supabase.from("goals").delete().eq("id", data[0].id);
+        }
+      } else if (action.action === "create_reminder" && action.description && action.remindAt) {
+        // Email do destinatário = email do usuário autenticado
+        const { data: userData } = await supabase.auth.getUser();
+        const email = userData.user?.email;
+        if (email) {
+          await supabase.from("reminders").insert({
+            user_id: userId,
+            description: action.description,
+            amount: action.amount ?? null,
+            due_date: action.dueDate ?? null,
+            remind_at: action.remindAt,
+            email,
+            frequency: action.frequency ?? "once",
+            active: true,
+            sent: false,
+          });
+        }
+      } else if (action.action === "update_reminder" && action.description) {
+        const { data } = await supabase
+          .from("reminders")
+          .select("id")
+          .eq("user_id", userId)
+          .ilike("description", `%${action.description}%`)
+          .order("created_at", { ascending: false })
+          .limit(1);
+        if (data && data.length > 0) {
+          const updates: Record<string, unknown> = {};
+          if (action.newDescription) updates.description = action.newDescription;
+          if (action.amount !== undefined) updates.amount = action.amount;
+          if (action.dueDate !== undefined) updates.due_date = action.dueDate;
+          if (action.remindAt) {
+            updates.remind_at = action.remindAt;
+            updates.sent = false; // reabre o lembrete pra ser enviado de novo
+          }
+          if (action.frequency) updates.frequency = action.frequency;
+          if (Object.keys(updates).length > 0) {
+            await supabase.from("reminders").update(updates).eq("id", data[0].id);
+          }
+        }
+      } else if (action.action === "delete_reminder" && action.description) {
+        const { data } = await supabase
+          .from("reminders")
+          .select("id")
+          .eq("user_id", userId)
+          .ilike("description", `%${action.description}%`)
+          .order("created_at", { ascending: false })
+          .limit(1);
+        if (data && data.length > 0) {
+          await supabase.from("reminders").delete().eq("id", data[0].id);
         }
       }
     } catch (e) {

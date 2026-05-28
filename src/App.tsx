@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Spreadsheet from "./pages/Spreadsheet";
 import Goals from "./pages/Goals";
+import Reminders from "./pages/Reminders";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/AppLayout";
@@ -35,6 +36,7 @@ const App = () => (
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/spreadsheet" element={<Spreadsheet />} />
                 <Route path="/goals" element={<Goals />} />
+                <Route path="/reminders" element={<Reminders />} />
                 <Route path="/account" element={<Account />} />
               </Route>
             </Route>

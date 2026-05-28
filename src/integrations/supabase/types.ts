@@ -202,6 +202,48 @@ export type Database = {
         }
         Relationships: []
       }
+      reminders: {
+        Row: {
+          active: boolean
+          amount: number | null
+          created_at: string | null
+          description: string
+          due_date: string | null
+          email: string
+          frequency: string
+          id: string
+          remind_at: string
+          sent: boolean
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          amount?: number | null
+          created_at?: string | null
+          description: string
+          due_date?: string | null
+          email: string
+          frequency?: string
+          id?: string
+          remind_at: string
+          sent?: boolean
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          amount?: number | null
+          created_at?: string | null
+          description?: string
+          due_date?: string | null
+          email?: string
+          frequency?: string
+          id?: string
+          remind_at?: string
+          sent?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
